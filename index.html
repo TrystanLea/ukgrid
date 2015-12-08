@@ -15,9 +15,17 @@
 <script language="javascript" type="text/javascript" src="vis.helper.js"></script>
 
 <style>
-
-    body {
+    html, body {
+        height: 100%;
         color: #ccc;
+    }
+
+    #wrap {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        /* Negative indent footer by it's height */
+        margin: 0 auto -40px;
     }
     
     #legend {
@@ -47,6 +55,32 @@
     
     .container {
       width:1280px;
+    }
+    
+    #push, #footer {
+        height: 30px;
+    }
+    #footer {
+        background-color: #181818;
+        text-align: center;
+        font-size: 13px;
+        font-weight: bold;
+        padding-top:10px;
+    }
+    #footer a {
+        color: #77b4d9;
+        text-decoration: none;
+    }
+    #footer span {
+        color:#999;
+    }
+    
+    a {
+      color:#77b4d9
+    }
+    
+    a:hover {
+      text-decoration:none;
     }
     
 </style>
@@ -97,11 +131,19 @@
             </div>
             <div class="span2"><div id="visible-checkboxes"></div></div>
         </div>
-        </div>
+            
+		    <br><br>
+		    
+        <p class="a2">This site shows realtime uk electricity demand and how it is supplied from different sources of electricity generation. The data is updated every 5 minutes from bmreports.com. Click on the key items on the right to show or hide different sources of generation and use the navigation buttons to explore historic data.</p>
+             
+        <p class="a2">The source code for this site, including a small and fast timeseries database is all open source and available on github <a href="https://github.com/TrystanLea/ukgrid">here</a>.<br></p>
 
-		        
-		        <br><br>
-		        
+        </div>
+        </div>
+        
+        <div id="footer">
+            Powered by
+            <a href="http://openenergymonitor.org">openenergymonitor.org</a>
         </div>
     </body>
 
@@ -135,7 +177,7 @@
         var s = "";
         var sel = 0;
         if (grid[z].show) {s = "&nbsp;*&nbsp;"; sel = 1;}
-        out += '<div><div class="legendcheckbox" name="'+z+'" sel='+sel+' style="float:left; background-color:'+grid[z].color+'"><div class="legendItem">'+s+'</div></div>'+z+'</div>';
+        out += '<div><div class="legendcheckbox" name="'+z+'" sel='+sel+' style="float:left; background-color:'+grid[z].color+'; cursor:pointer"><div class="legendItem">'+s+'</div></div>'+z+'</div>';
     }
     $("#visible-checkboxes").html(out);
     
@@ -199,7 +241,6 @@
     $('.time').click(function () {view.timewindow($(this).attr("time")); load();});
     
     function load() {
-    
       interval = ((view.end - view.start)*0.001) / 288;
       if (interval<300) interval = 300;
   
