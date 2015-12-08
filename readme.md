@@ -15,7 +15,7 @@ The small and fast timeseries database is called PHPFina and is an adaptation of
 
 ## CO2 Intensity calculation
 
-The intensity figures I used to calculate the grid intensity are from [GridCarbon](http://www.gridcarbon.uk/#calculation) a very nice mobile app showing realtime grid carbon.
+The intensity figures I used to calculate the grid intensity are from [GridCarbon](http://www.gridcarbon.uk/#calculation) a very nice mobile app showing realtime grid carbon. The intensity total is divided by 0.93 to reflect the 7% losses in the transmission and distribution networks.
 
 <table>
   <tbody>
