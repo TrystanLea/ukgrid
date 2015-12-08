@@ -26,7 +26,7 @@ The intensity figures I used to calculate the grid intensity are from [GridCarbo
     <tr><td>NUCLEAR</td><td>Nuclear</td><td>0</td></tr>
     <tr><td>WIND</td><td>Wind</td><td>0</td></tr>
     <tr><td>PS</td><td>Pumped storage</td><td>0</td></tr>
-    <tr><td>NPSHYD</td><td>Non-pumped storage hydro</td><td align="center">0</td></tr>
+    <tr><td>NPSHYD</td><td>Non-pumped storage hydro</td><td>0</td></tr>
     <tr><td>OTHER</td><td>Other</td><td>300</td></tr>
     <tr><td>OIL</td><td>Oil</td><td>610</td></tr>
     <tr><td>INTFR</td><td>French Interconnector</td><td>90</td></tr>
