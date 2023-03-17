@@ -1,59 +1,38 @@
 <?php
 
-$apikey = "SET-MANUAL-WRITE-APIKEY";
-$datadir = "/home/user/ukgrid/";
-
 error_reporting(E_ALL);
 ini_set('display_errors', 'on');
 
-if (!isset($_GET['q'])) die;
-if (!isset($_GET['id'])) die;
-
-$q = $_GET['q'];
-$id = (int) $_GET['id'];
-
-$logger = new EmonLogger();
-
-require "PHPFina.php";
-$phpfina = new PHPFina();
-$phpfina->dir = $datadir;
-
 header('Content-Type: application/json');
-switch ($q)
-{   
-    case "create":
-        if (isset($_GET['apikey']) && $apikey == $_GET['apikey']) { 
-            print $phpfina->create($id,array("interval"=>get('interval'), "columns"=>get('columns')));
-        }
-        break;
-    
-    case "post":
-        if (isset($_GET['apikey']) && $apikey == $_GET['apikey']) { 
-            $time = time();
-            print json_encode($phpfina->post($id,$time,explode(",",get('values'))));
-        }
-        break;
 
-    case "data":
-        print json_encode($phpfina->get_data($id,get('start'),get('end'),get('interval'),get('skipmissing'),get('limitinterval')));
-        break;
-    
-    case "lastvalue":
-        print json_encode($phpfina->lastvalue($id));
-        break;
+$ids = get("ids");
+$start = (float) get("start");
+$end = (float) get("end");
+$interval = (int) get("interval");
+$average = (int) get("average",false,0);
+$delta = (int) get("delta",false,0);
+$skipmissing = (int) get("skipmissing",false,0);
+$limitinterval = (int) get("limitinterval",false,0);
+$timeformat = get('timeformat',false,'unixms');
+$dp = (int) get('dp',false,-1);
+
+if (!in_array($timeformat,array("unix","unixms","excel","iso8601","notime"))) {
+    return array('success'=>false, 'message'=>'Invalid time format');
 }
-    
-function get($index)
+
+print file_get_contents("http://emoncms.org/feed/data.json?ids=$ids&start=$start&end=$end&interval=$interval&average=$average&delta=$delta&skipmissing=$skipmissing&limitinterval=$limitinterval&timeformat=$timeformat&dp=$dp");
+
+function get($index,$error_if_missing=false,$default=null)
 {
-    $val = null;
-    if (isset($_GET[$index])) $val = $_GET[$index];
-    
-    if (get_magic_quotes_gpc()) $val = stripslashes($val);
+    $val = $default;
+    if (isset($_GET[$index])) {
+        $val = rawurldecode($_GET[$index]);
+    } else if ($error_if_missing) {
+        header('Content-Type: text/plain');
+        die("missing $index parameter");
+    }
+    if(!is_null($val)){
+    $val = stripslashes($val);
+	}
     return $val;
-}
-
-class EmonLogger {
-    public function __construct() {}
-    public function info ($message){ }
-    public function warn ($message){ }
 }

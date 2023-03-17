@@ -1,0 +1,67 @@
+html, body {
+    height: 100%;
+    color: #ccc;
+}
+
+#wrap {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    /* Negative indent footer by it's height */
+    margin: 0 auto -40px;
+}
+
+#legend {
+ padding-left:20px;
+}
+
+.legendLabel {
+  padding-right:15px;
+}
+
+h1 {
+  color:#fff;
+  font-size:52px;
+}
+
+.legendcheckbox {
+  width:15px;
+  height:12px;
+  border: 1px solid #fff;
+  margin-right:5px;
+}
+
+.legendItem {
+  width:15px;
+  height:12px;
+}
+
+.container {
+  width:1280px;
+}
+
+#push, #footer {
+    height: 30px;
+}
+#footer {
+    background-color: #181818;
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    padding-top:10px;
+}
+#footer a {
+    color: #77b4d9;
+    text-decoration: none;
+}
+#footer span {
+    color:#999;
+}
+
+a {
+  color:#77b4d9
+}
+
+a:hover {
+  text-decoration:none;
+}

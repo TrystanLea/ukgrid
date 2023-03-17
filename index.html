@@ -1,310 +1,77 @@
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>UK Grid Data</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="style.css?v=1" rel="stylesheet">
 
-<script type="text/javascript" src="jquery-1.9.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.stack.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.time.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.selection.min.js"></script>
+</head>
+<body>
+    <div id="wrap">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+            
+            </div>
+        </div>
+    </div>
 
-<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="flot/excanvas.min.js"></script><![endif]-->
-<script language="javascript" type="text/javascript" src="flot/jquery.js"></script>
-<script language="javascript" type="text/javascript" src="flot/jquery.flot.js"></script>
-<script language="javascript" type="text/javascript" src="flot/jquery.flot.stack.js"></script>
-<script language="javascript" type="text/javascript" src="flot/jquery.flot.time.min.js"></script>
-<script language="javascript" type="text/javascript" src="flot/jquery.flot.selection.min.js"></script>
+    <div class="container"><br><br><br><br>
+    <div class="row-fluid">
+    
+        <div class="span12">
+        <h1><span style="color:#aaa">uk</span><span>grid</span></h1>
+        </div>
+    </div>        
+    <div class="row-fluid">
+    
+        <div class="span10">
+            <div class='btn-group' style="float:right">
+                <button id='zoomin' class='btn' >+</button>
+                <button id='zoomout' class='btn' >-</button>
+                <button id='left' class='btn' ><</button>
+                <button id='right' class='btn' >></button>
+            </div>
+            
+            <div class='btn-group' style="float:right; padding-right:10px">
+                <button class='btn time visnav' type='button' time='1'>D</button>
+                <button class='btn time' type='button' time='7'>W</button>
+                <button class='btn time' type='button' time='30'>M</button>
+                <button class='btn time' type='button' time='365'>Y</button>
+            </div>
+
+            <div style="clear:both"></div><br>
+            
+            <div id="placeholder_bound">
+	              <div id="placeholder"></div>
+            </div>
+        </div>
+        <div class="span2"><div id="visible-checkboxes"></div></div>
+    </div>
+        
+    <br><br>
+    
+    <p class="a2">This site shows realtime uk electricity demand and how it is supplied from different sources of electricity generation. The data is updated every 5 minutes from bmreports.com. Click on the key items on the right to show or hide different sources of generation and use the navigation buttons to explore historic data.</p>
+         
+    <p class="a2">The source code for this site is open source on github <a href="https://github.com/TrystanLea/ukgrid">here</a>.<br></p>
+
+    </div>
+    </div>
+    
+    <div id="footer">
+        Powered by
+        <a href="http://openenergymonitor.org">openenergymonitor.org</a>
+    </div>
+</body>
+</html>
 
 <script language="javascript" type="text/javascript" src="vis.helper.js"></script>
-
-<style>
-    html, body {
-        height: 100%;
-        color: #ccc;
-    }
-
-    #wrap {
-        min-height: 100%;
-        height: auto !important;
-        height: 100%;
-        /* Negative indent footer by it's height */
-        margin: 0 auto -40px;
-    }
-    
-    #legend {
-     padding-left:20px;
-    }
-    
-    .legendLabel {
-      padding-right:15px;
-    }
-    
-    h1 {
-      color:#fff;
-      font-size:52px;
-    }
-    
-    .legendcheckbox {
-      width:15px;
-      height:12px;
-      border: 1px solid #fff;
-      margin-right:5px;
-    }
-    
-    .legendItem {
-      width:15px;
-      height:12px;
-    }
-    
-    .container {
-      width:1280px;
-    }
-    
-    #push, #footer {
-        height: 30px;
-    }
-    #footer {
-        background-color: #181818;
-        text-align: center;
-        font-size: 13px;
-        font-weight: bold;
-        padding-top:10px;
-    }
-    #footer a {
-        color: #77b4d9;
-        text-decoration: none;
-    }
-    #footer span {
-        color:#999;
-    }
-    
-    a {
-      color:#77b4d9
-    }
-    
-    a:hover {
-      text-decoration:none;
-    }
-    
-</style>
-
-<html>
-    <head>
-
-    </head>
-    <body>
-        <div id="wrap">
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                
-                </div>
-            </div>
-        </div>
-
-        <div class="container"><br><br><br><br>
-        <div class="row-fluid">
-        
-            <div class="span12">
-            <h1><span style="color:#aaa">uk</span><span>grid</span></h1>
-            </div>
-        </div>        
-        <div class="row-fluid">
-        
-            <div class="span10">
-                <div class='btn-group' style="float:right">
-                    <button id='zoomin' class='btn' >+</button>
-                    <button id='zoomout' class='btn' >-</button>
-                    <button id='left' class='btn' ><</button>
-                    <button id='right' class='btn' >></button>
-                </div>
-                
-                <div class='btn-group' style="float:right; padding-right:10px">
-                    <button class='btn time visnav' type='button' time='1'>D</button>
-                    <button class='btn time' type='button' time='7'>W</button>
-                    <button class='btn time' type='button' time='30'>M</button>
-                    <button class='btn time' type='button' time='365'>Y</button>
-                </div>
-
-                <div style="clear:both"></div><br>
-                
-                <div id="placeholder_bound">
-			              <div id="placeholder"></div>
-		            </div>
-            </div>
-            <div class="span2"><div id="visible-checkboxes"></div></div>
-        </div>
-            
-		    <br><br>
-		    
-        <p class="a2">This site shows realtime uk electricity demand and how it is supplied from different sources of electricity generation. The data is updated every 5 minutes from bmreports.com. Click on the key items on the right to show or hide different sources of generation and use the navigation buttons to explore historic data.</p>
-             
-        <p class="a2">The source code for this site, including a small and fast timeseries database is all open source and available on github <a href="https://github.com/TrystanLea/ukgrid">here</a>.<br></p>
-
-        </div>
-        </div>
-        
-        <div id="footer">
-            Powered by
-            <a href="http://openenergymonitor.org">openenergymonitor.org</a>
-        </div>
-    </body>
-
-<script>
-
-    $("body").css("background-color","#222");
-
-    var grid = {
-      "WIND":{color:"rgba(0,255,0,0.6)",column:5,yaxis:1,stack: true},
-      "PS":{color:"rgba(0,150,255,0.6)",column:6,yaxis:1,stack: true},
-      "NPSHYD":{color:"rgba(0,50,255,0.6)",column:7,yaxis:1,stack: true},
-      "OTHER":{color:"rgba(227,162,36,0.6)",column:8,yaxis:1,stack: true},
-      "INTFR":{color:"rgba(227,197,140,0.6)",column:9,yaxis:1,stack: true},
-      "INTIRL":{color:"rgba(227,197,140,0.6)",column:10,yaxis:1,stack: true},
-      "INTNED":{color:"rgba(227,197,140,0.6)",column:11,yaxis:1,stack: true},
-      "INTEW":{color:"rgba(227,197,140,0.6)",column:12,yaxis:1,stack: true},
-      "NUCLEAR":{color:"rgba(227,225,36,0.6)",column:4,yaxis:1,stack: true},
-      "OIL":{color:"rgba(50,50,50,0.6)",column:2,yaxis:1,stack: true},
-      "COAL":{color:"rgba(0,0,0,0.6)",column:3,yaxis:1,stack: true},
-      "CCGT":{color:"rgba(0,100,255,0.6)",column:0,yaxis:1,stack: true},
-      "OCGT":{color:"rgba(0,100,200,0.6)",column:1,yaxis:1,stack: true},
-      "DEMAND":{color:"rgba(255,0,0,0.6)",column:14,yaxis:1,stack: false,fill:false,show:false},
-      "INTENSITY":{color:"rgba(255,255,255,0.6)",column:13,yaxis:2,stack: false,fill:false,show:false},
-      "INTENSITY_SMOOTH":{color:"rgba(255,255,255,1.0)",yaxis:2,stack: false,fill:false,show:true}
-    };
-    
-    var out = "";
-    for (z in grid) {
-        if (grid[z].show==undefined) grid[z].show = true;
-        grid[z].label = z;
-        var s = "";
-        var sel = 0;
-        if (grid[z].show) {s = "&nbsp;*&nbsp;"; sel = 1;}
-        out += '<div><div class="legendcheckbox" name="'+z+'" sel='+sel+' style="float:left; background-color:'+grid[z].color+'; cursor:pointer"><div class="legendItem">'+s+'</div></div>'+z+'</div>';
-    }
-    $("#visible-checkboxes").html(out);
-    
-    var path = "http://openenergymonitor.org/ukgrid/";
-
-    var loaded = 0;
-    var store = {};
-
-    var interval = 300;
-    var timenow = (new Date()).getTime();
-    view.end = timenow;
-    view.end = Math.round(view.end / (interval*1000)) * interval*1000;
-    view.start = view.end - (86400*1000);
-
-    var placeholder_bound = $('#placeholder_bound');
-    var placeholder = $('#placeholder');
-    
-    var width = placeholder_bound.width();
-    var height = width * 0.5;
-    
-    placeholder.width(width);
-    placeholder_bound.height(height);
-    placeholder.height(height);
-    
-    var options = {
-      xaxis: {
-          min: view.start, max: view.end, mode: "time", timezone: "browser"
-      },
-      selection: { mode: "x", color:"#000" },
-      legend: {show:false}
-    };
-    
-    load();
-    
-    $(".legendcheckbox").click(function() {
-      var name = $(this).attr("name");
-      var val = $(this).attr("sel");
-      if (val==0) {
-          val = 1; 
-          $(this).find(".legendItem").html("&nbsp;*&nbsp;");
-      } else { 
-          val=0;
-          $(this).find(".legendItem").html("");
-      }
-      $(this).attr("sel",val);
-      
-      grid[name].show = val;
-      draw();
-    });
-    
-    $('#placeholder').bind("plotselected", function (event, ranges) {
-        view.start = ranges.xaxis.from;
-        view.end = ranges.xaxis.to;
-        load();
-    });
-    
-    $("#zoomout").click(function () {view.zoomout(); load();});
-    $("#zoomin").click(function () {view.zoomin(); load();});
-    $('#right').click(function () {view.panright(); load();});
-    $('#left').click(function () {view.panleft(); load();});
-    $('.time').click(function () {view.timewindow($(this).attr("time")); load();});
-    
-    function load() {
-      interval = ((view.end - view.start)*0.001) / 288;
-      if (interval<300) interval = 300;
-  
-      $.ajax({                                      
-        url: path+"api.php?q=data&id=1&start="+view.start+"&end="+view.end+"&interval="+interval,
-        async: true,
-        dataType: "json",
-        success: function(data) {
-        
-          for (z in grid) {
-            grid[z].data = [];
-          }
-          
-          var time = view.start;
-          for (var row=0; row<data.length; row++) {
-            time = view.start + (interval*row*1000);
-            for (z in grid) {
-              if (data[row][14]!=0 && grid[z].column!=undefined) {
-                grid[z].data.push([time, data[row][grid[z].column]]);
-              }
-            }
-          }
-          
-          for (var i=0; i<grid["INTENSITY"].data.length; i++) {
-            var sum = 0; var nsum = 0;
-            for (var x=-3; x<=3; x++) {
-              if (grid["INTENSITY"].data[i+x]!=undefined) {
-                if (grid["INTENSITY"].data[i+x][1]!=null) {
-                  sum += grid["INTENSITY"].data[i+x][1]*1.0;
-                  nsum++;
-                }
-              }
-            }
-            grid["INTENSITY_SMOOTH"].data[i] = [grid["INTENSITY"].data[i][0],sum/nsum];
-          }
-          
-          draw();
-        }
-      });
-    }
-    
-    function draw() {
-    
-        options.xaxis.min = view.start;
-        options.xaxis.max = view.end;
-        var data = [];
-        
-        for (z in grid) {
-          var series = {
-            label:grid[z].label, 
-            data:grid[z].data, 
-            color:grid[z].color, 
-            yaxis:grid[z].yaxis,
-            stack:grid[z].stack
-          };
-          if (grid[z].fill!=undefined && grid[z].fill==false) {
-            series.lines = {show:true,fill:false};
-          } else {
-            series.lines = {show:true,fill:0.6, lineWidth:0};
-          }
-          if (grid[z].show) data.push(series);
-        }
-        
-        $.plot("#placeholder",data, options);
-    }
-    
-</script>
+<script language="javascript" type="text/javascript" src="ukgrid.js?v=1"></script>
