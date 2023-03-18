@@ -2,23 +2,30 @@ $("body").css("background-color","#222");
 
 var series = [
     {label:"NUCLEAR", feedid:97697, color:"rgba(227,225,36,0.6)"},
-    {label:"BIOMASS", feedid:382965, color:"rgba(227,197,140,0.6)"},
+    {label:"BIOMASS", feedid:382965, color:"#735d34"},
+    
+    {label:"INTFR", feedid:97707, color:"#36b271"},
+    {label:"INTIRL", feedid:97709, color:"#64d098"},
+    {label:"INTNED", feedid:97711, color:"#78d6a5"},
+    {label:"INTEW", feedid:97713, color:"#8bdcb2"},
+    {label:"INTNEM", feedid:382967, color:"#9fe2bf"},
+    {label:"INTIFA2", feedid:476656, color:"#b3e8cc"},
+    {label:"INTNSL", feedid:476657, color:"#c6eed9"},
+    {label:"INTELEC", feedid:476658, color:"#daf4e6"},
+    
     {label:"NPSHYD", feedid:97703, color:"rgba(0,50,255,0.6)"},
     {label:"WIND", feedid:97699, color:"rgba(0,255,0,0.6)"},
     {label:"PS", feedid:97701, color:"rgba(0,150,255,0.6)"},
 
     {label:"OTHER", feedid:97705, color:"rgba(227,162,36,0.6)"},
-    {label:"INTFR", feedid:97707, color:"rgba(227,197,140,0.6)"},
-    {label:"INTIRL", feedid:97709, color:"rgba(227,197,140,0.6)"},
-    {label:"INTNED", feedid:97711, color:"rgba(227,197,140,0.6)"},
-    {label:"INTEW", feedid:97713, color:"rgba(227,197,140,0.6)"},
-    {label:"INTNEM", feedid:382967, color:"rgba(227,197,140,0.6)"},
-
+    
     {label:"OIL", feedid:97693, color:"rgba(50,50,50,0.6)"},
     {label:"COAL",feedid:97695, color:"rgba(0,0,0,0.6)"},
-    {label:"CCGT", feedid:97689, color:"rgba(0,100,255,0.6)"},
     {label:"OCGT", feedid:97691, color:"rgba(0,100,200,0.6)"},
-    {label:"DEMAND", feedid:97736, color:"rgba(255,0,0,0.6)",stack: false,fill:false,show:false},
+    {label:"CCGT", feedid:97689, color:"rgba(0,100,255,0.6)"},
+
+    
+    {label:"DEMAND", feedid:476659, color:"rgba(255,0,0,0.6)",stack: false,fill:false,show:true},
     {label:"INTENSITY", feedid:428391, color:"rgba(255,255,255,0.6)",yaxis:2,stack: false,fill:false,show:false}
 ];
 
@@ -75,8 +82,16 @@ var options = {
   },
   legend: {
       show:false
+  },
+  grid: {
+      show:true, 
+      color:"#aaa",
+      borderWidth:0,
+      hoverable: true
   }
 };
+var previousPoint = false;
+var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 load();
 
@@ -132,7 +147,9 @@ function load() {
                 data_with_time = []
                 time = view.start;
                 for (var i in data[z].data) {
-                    data_with_time.push([time,data[z].data[i]]);
+                    val = data[z].data[i]
+                    if (val==null && series[z].stack) val = 0
+                    data_with_time.push([time,val]);
                     time += intervalms;
                 } 
                 series[z].data = data_with_time
@@ -151,3 +168,46 @@ function draw() {
     options.xaxis.max = view.end;  
     $.plot("#placeholder",data, options);
 }
+
+
+$('#placeholder').bind("plothover", function (event, pos, item) {
+    if (item) {
+        var i = item.dataIndex;
+        
+        if (previousPoint != item.datapoint) {
+            previousPoint = item.datapoint;
+
+            $("#tooltip").remove();
+         
+            var itemTime = item.datapoint[0];
+            var itemValue = item.datapoint[1];
+            
+            var d = new Date(itemTime);
+            var days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+            var date = days[d.getDay()]+", "+months[d.getMonth()]+" "+d.getDate();
+              
+            var h = d.getHours();
+            if (h<10) h = "0"+h;
+            var m = d.getMinutes();
+            if (m<10) m = "0"+m;
+            var time = h+":"+m;
+            
+            var name = "";
+            var unit = " MW";
+            
+            if (item.series.label=="INTENSITY") {
+                unit = " gCO2/kWh"
+            }
+            
+            var out ="";
+            for (var z in series) {
+                if (series[z].label==item.series.label) {
+                out += series[z].label+": "+series[z].data[z][1].toFixed(0)+unit+"<br>"
+                break;
+                }
+            }
+                  
+            tooltip(item.pageX, item.pageY, out+date+", "+time, "#fff", "#000");
+        }
+    } else $("#tooltip").remove();
+});
