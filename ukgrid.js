@@ -138,7 +138,8 @@ function load() {
             start: view.start,
             end: view.end,
             interval: interval,
-            timeformat: "notime"
+            timeformat: "notime",
+            average:1
         },
         async: true,
         dataType: "json",
